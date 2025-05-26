@@ -90,12 +90,7 @@ class PaymentIntentModel {
       object: json['object'] as String?,
       amount: json['amount'] as int?,
       amountCapturable: json['amount_capturable'] as int?,
-      amountDetails:
-          json['amount_details'] == null
-              ? null
-              : AmountDetails.fromJson(
-                json['amount_details'] as Map<String, dynamic>,
-              ),
+
       amountReceived: json['amount_received'] as int?,
       application: json['application'] as dynamic,
       applicationFeeAmount: json['application_fee_amount'] as dynamic,
@@ -117,10 +112,7 @@ class PaymentIntentModel {
       lastPaymentError: json['last_payment_error'] as dynamic,
       latestCharge: json['latest_charge'] as dynamic,
       livemode: json['livemode'] as bool?,
-      metadata:
-          json['metadata'] == null
-              ? null
-              : Metadata.fromJson(json['metadata'] as Map<String, dynamic>),
+
       nextAction: json['next_action'] as dynamic,
       onBehalfOf: json['on_behalf_of'] as dynamic,
       paymentMethod: json['payment_method'] as dynamic,
@@ -130,7 +122,7 @@ class PaymentIntentModel {
               : PaymentMethodOptions.fromJson(
                 json['payment_method_options'] as Map<String, dynamic>,
               ),
-      paymentMethodTypes: json['payment_method_types'] as List<String>?,
+
       processing: json['processing'] as dynamic,
       receiptEmail: json['receipt_email'] as dynamic,
       review: json['review'] as dynamic,

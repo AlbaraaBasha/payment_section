@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:payment_part/core/utils/styles.dart';
-import 'package:payment_part/features/home/presentation/pages/payment_details_page.dart';
+import 'package:payment_part/features/home/data/repositories/checkout_repo_impl.dart';
+import 'package:payment_part/features/home/presentation/cubit/payment/payment_cubit.dart';
 import 'package:payment_part/features/home/widgets/custom_button.dart';
 import 'package:payment_part/features/home/widgets/order_item_info.dart';
-import 'package:payment_part/features/home/widgets/payment_method_list_view.dart';
+import 'package:payment_part/features/home/widgets/payment_methods_bottom_sheet.dart';
 
 class MyCardBody extends StatelessWidget {
   const MyCardBody({super.key});
@@ -45,44 +47,15 @@ class MyCardBody extends StatelessWidget {
                   borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                 ),
                 builder: (context) {
-                  return const PaymentMethodsBottomSheet();
+                  return BlocProvider(
+                    create: (context) => PaymentCubit(CheckoutRepoImpl()),
+                    child: const PaymentMethodsBottomSheet(),
+                  );
                 },
               );
             },
           ),
           const SizedBox(height: 12),
-        ],
-      ),
-    );
-  }
-}
-
-class PaymentMethodsBottomSheet extends StatelessWidget {
-  const PaymentMethodsBottomSheet({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-
-        children: [
-          const SizedBox(height: 16),
-          const PaymentMethodsListView(),
-          const SizedBox(height: 20),
-          CustomButton(
-            title: 'Continue',
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) {
-                    return const PaymentDetailsPage();
-                  },
-                ),
-              );
-            },
-          ),
         ],
       ),
     );
