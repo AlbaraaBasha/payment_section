@@ -17,7 +17,7 @@ class ThankYouCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(top: 66, left: 22, right: 22),
+        padding: const EdgeInsets.only(top: 66, left: 18, right: 18),
         child: Column(
           children: [
             const Text(

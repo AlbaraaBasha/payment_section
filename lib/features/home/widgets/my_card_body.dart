@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:payment_part/core/utils/styles.dart';
+import 'package:payment_part/features/home/presentation/pages/payment_details_page.dart';
 import 'package:payment_part/features/home/widgets/custom_button.dart';
 import 'package:payment_part/features/home/widgets/order_item_info.dart';
 import 'package:payment_part/features/home/widgets/payment_method_list_view.dart';
@@ -70,7 +71,18 @@ class PaymentMethodsBottomSheet extends StatelessWidget {
           const SizedBox(height: 16),
           const PaymentMethodsListView(),
           const SizedBox(height: 20),
-          CustomButton(title: 'Continue', onPressed: () {}),
+          CustomButton(
+            title: 'Continue',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const PaymentDetailsPage();
+                  },
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
