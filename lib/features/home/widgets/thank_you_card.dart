@@ -35,7 +35,7 @@ class ThankYouCard extends StatelessWidget {
             const SizedBox(height: 20),
             const OrderInfoItem(title: 'Time', value: '12:00 PM'),
             const SizedBox(height: 20),
-            const OrderInfoItem(title: 'To', value: 'Mahmoud Reda'),
+            const OrderInfoItem(title: 'To', value: 'Albaraa Basha'),
             Divider(
               color: Colors.black.withOpacity(0.2),
               thickness: 2,

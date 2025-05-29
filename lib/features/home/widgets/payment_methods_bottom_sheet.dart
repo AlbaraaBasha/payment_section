@@ -1,6 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payment_part/features/home/data/models/payment_intent_input_model.dart';
+import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
+import 'package:payment_part/core/utils/api_keys.dart';
+import 'package:payment_part/features/home/data/models/amout_model/amout_model.dart';
+import 'package:payment_part/features/home/data/models/amout_model/details.dart';
+import 'package:payment_part/features/home/data/models/item_list_model/item.dart';
+import 'package:payment_part/features/home/data/models/item_list_model/item_list_model.dart';
 import 'package:payment_part/features/home/presentation/cubit/payment/payment_cubit.dart';
 import 'package:payment_part/features/home/presentation/pages/thanks_you_page.dart';
 import 'package:payment_part/features/home/widgets/custom_button.dart';
@@ -44,16 +51,19 @@ class PaymentMethodsBottomSheet extends StatelessWidget {
                 isLaoding: state is PaymentLoading,
                 title: 'Continue',
                 onPressed: () {
-                  PaymentIntentInputModel paymentIntentInputModel =
-                      PaymentIntentInputModel(
-                        amount: '50',
-                        currency: 'USD',
-                        customerID: 'cus_SOWr4hEV315LWO',
-                      );
-                  BlocProvider.of<PaymentCubit>(context).makepayment(
-                    paymentIntentInputModel: paymentIntentInputModel,
-                    // You need to define paymentIntentInputModel based on your requirements
-                  );
+                  // PaymentIntentInputModel paymentIntentInputModel =
+                  //     PaymentIntentInputModel(
+                  //       amount: '50',
+                  //       currency: 'USD',
+                  //       customerID: 'cus_SOWr4hEV315LWO',
+                  //     );
+                  // BlocProvider.of<PaymentCubit>(context).makepayment(
+                  //   paymentIntentInputModel: paymentIntentInputModel,
+                  // );
+
+                  // For PayPal payment
+                  var data = getTransictionsData();
+                  executePaypalPayment(context, data);
                 },
               );
             },
@@ -61,5 +71,56 @@ class PaymentMethodsBottomSheet extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void executePaypalPayment(
+    BuildContext context,
+    ({AmountModel amount, ItemListModel ordersItemList}) data,
+  ) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder:
+            (BuildContext context) => PaypalCheckoutView(
+              sandboxMode: true,
+              clientId: ApiKeys.paypalClientId,
+              secretKey: ApiKeys.paypalSecretKey,
+              transactions: [
+                {
+                  "amount": data.amount.toJson(),
+                  "description": "The payment transaction description.",
+
+                  "item_list": data.ordersItemList.toJson(),
+                },
+              ],
+              note: "Contact us for any questions on your order.",
+              onSuccess: (Map params) async {
+                log("onSuccess: $params");
+              },
+              onError: (error) {
+                log("onError: $error");
+                Navigator.pop(context);
+              },
+              onCancel: () {
+                log('cancelled:');
+              },
+            ),
+      ),
+    );
+  }
+
+  ({AmountModel amount, ItemListModel ordersItemList}) getTransictionsData() {
+    var amount = AmountModel(
+      currency: "USD",
+      total: "100",
+      details: Details(shipping: "0", subtotal: "100", shippingDiscount: 0),
+    );
+
+    List<Item> orders = [
+      Item(name: "Apple", quantity: 4, price: "10", currency: "USD"),
+      Item(name: "Pineapple", quantity: 5, price: "12", currency: "USD"),
+    ];
+
+    var ordersItemList = ItemListModel(items: orders);
+    return (amount: amount, ordersItemList: ordersItemList);
   }
 }
