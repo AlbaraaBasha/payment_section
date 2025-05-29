@@ -8,6 +8,7 @@ import 'package:payment_part/features/home/data/models/amout_model/amout_model.d
 import 'package:payment_part/features/home/data/models/amout_model/details.dart';
 import 'package:payment_part/features/home/data/models/item_list_model/item.dart';
 import 'package:payment_part/features/home/data/models/item_list_model/item_list_model.dart';
+import 'package:payment_part/features/home/data/models/payment_intent_input_model.dart';
 import 'package:payment_part/features/home/presentation/cubit/payment/payment_cubit.dart';
 import 'package:payment_part/features/home/presentation/pages/thanks_you_page.dart';
 import 'package:payment_part/features/home/widgets/custom_button.dart';
@@ -51,19 +52,16 @@ class PaymentMethodsBottomSheet extends StatelessWidget {
                 isLaoding: state is PaymentLoading,
                 title: 'Continue',
                 onPressed: () {
-                  // PaymentIntentInputModel paymentIntentInputModel =
-                  //     PaymentIntentInputModel(
-                  //       amount: '50',
-                  //       currency: 'USD',
-                  //       customerID: 'cus_SOWr4hEV315LWO',
-                  //     );
-                  // BlocProvider.of<PaymentCubit>(context).makepayment(
-                  //   paymentIntentInputModel: paymentIntentInputModel,
-                  // );
-
-                  // For PayPal payment
-                  var data = getTransictionsData();
-                  executePaypalPayment(context, data);
+                  if (BlocProvider.of<PaymentCubit>(context).currentIndex ==
+                      0) {
+                    executeStripePayment(context);
+                  } else if (BlocProvider.of<PaymentCubit>(
+                        context,
+                      ).currentIndex ==
+                      1) {
+                    var data = getTransictionsData();
+                    executePaypalPayment(context, data);
+                  }
                 },
               );
             },
@@ -71,6 +69,17 @@ class PaymentMethodsBottomSheet extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void executeStripePayment(BuildContext context) {
+    PaymentIntentInputModel paymentIntentInputModel = PaymentIntentInputModel(
+      amount: '50',
+      currency: 'USD',
+      customerID: 'cus_SOWr4hEV315LWO',
+    );
+    BlocProvider.of<PaymentCubit>(
+      context,
+    ).makepayment(paymentIntentInputModel: paymentIntentInputModel);
   }
 
   void executePaypalPayment(
@@ -95,13 +104,23 @@ class PaymentMethodsBottomSheet extends StatelessWidget {
               note: "Contact us for any questions on your order.",
               onSuccess: (Map params) async {
                 log("onSuccess: $params");
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const ThanksYouPage();
+                    },
+                  ),
+                );
               },
               onError: (error) {
                 log("onError: $error");
                 Navigator.pop(context);
+                SnackBar(content: Text("Payment failed: $error"));
               },
               onCancel: () {
                 log('cancelled:');
+                Navigator.pop(context);
               },
             ),
       ),

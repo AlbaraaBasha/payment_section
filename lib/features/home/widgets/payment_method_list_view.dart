@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:payment_part/features/home/presentation/cubit/payment/payment_cubit.dart';
 import 'package:payment_part/features/home/widgets/payment_method_item.dart';
 
 class PaymentMethodsListView extends StatefulWidget {
@@ -26,6 +28,7 @@ class _PaymentMethodsListViewState extends State<PaymentMethodsListView> {
             onTap: () {
               setState(() {
                 activeIndex = index;
+                BlocProvider.of<PaymentCubit>(context).currentIndex = index;
               });
             },
             child: PaymentMethodItem(
